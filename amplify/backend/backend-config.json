@@ -1,0 +1,43 @@
+{
+  "api": {
+    "ai": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "quiz"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    }
+  },
+  "function": {
+    "quiz": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    }
+  },
+  "parameters": {
+    "AMPLIFY_function_quiz_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "quiz"
+        }
+      ]
+    },
+    "AMPLIFY_function_quiz_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "quiz"
+        }
+      ]
+    }
+  }
+}
