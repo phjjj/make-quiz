@@ -36,11 +36,19 @@ const ResultBox = styled.div`
   border: solid 2px ${(prop) => prop.color};
   padding: 1rem;
   div {
+    display: flex;
     line-height: 27px;
+    padding: 0px 10px 0px 10px;
+    cursor: pointer;
+    &:hover {
+      font-weight: 600;
+      border: solid 2px #e67e22;
+      border-radius: 20px;
+    }
   }
 
   span {
-    display: flex;
+    display: none;
     margin-top: 40px;
   }
 `;
@@ -66,20 +74,7 @@ function App() {
   const [data, setData] = useState<IQuiz>();
   const [value, setValue] = useState();
 
-  useEffect(() => {
-    // fetch("https://wdw6st9941.execute-api.ap-northeast-2.amazonaws.com/dev/items", {
-    //   method: "GET",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    // })
-    //   .then((response) => response.json())
-    //   .then((data) => setData(data))
-    //   .catch((error) => console.error("Fetch 에러:", error));
-  }, []);
-
   const onClickMakeButton = () => {
-    console.log(value);
     fetch("https://wdw6st9941.execute-api.ap-northeast-2.amazonaws.com/dev/items", {
       method: "POST",
       headers: {
@@ -91,10 +86,6 @@ function App() {
       .then((data) => setData(data))
       .catch((error) => console.error("Fetch 에러:", error));
   };
-  // console.log(data?.answer);
-  // console.log(data?.options.split("\n").map((v) => v));
-  // console.log(data?.question);
-  // console.log(JSON.stringify(data));
 
   const onClickCopyButton = () => {
     const { question, options, answer } = data as IQuiz;
@@ -107,6 +98,10 @@ function App() {
     //   .catch((error) => {
     //     console.error("클립보드 복사 중 오류가 발생했습니다:", error);
     //   });
+  };
+
+  const onClickOption = (e: any) => {
+    console.log(e.target.value);
   };
 
   return (
@@ -122,14 +117,16 @@ function App() {
         <Box>
           <ResultBox color="#E67E22">
             <h3>{data?.question}</h3>
-            {data?.options.split("\n").map((option) => (
-              <div>{option}</div>
+            {data?.options.split("\n").map((option, idx) => (
+              <div onClick={(e) => onClickOption(e)} key={idx}>
+                {option}
+              </div>
             ))}
             <span>정답 : {data?.answer}</span>
           </ResultBox>
-          <Button onClick={onClickCopyButton} color="#E67E22">
+          {/* <Button onClick={onClickCopyButton} color="#E67E22">
             복사하기
-          </Button>
+          </Button> */}
         </Box>
       </Main>
     </Layout>
