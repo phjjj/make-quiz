@@ -35,7 +35,10 @@ const ResultBox = styled.div`
   border-radius: 25px;
   border: solid 2px ${(prop) => prop.color};
   padding: 1rem;
-  div {
+  ol {
+    padding-left: 0;
+  }
+  li {
     display: flex;
     line-height: 27px;
     padding: 0px 10px 0px 10px;
@@ -101,7 +104,14 @@ function App() {
   };
 
   const onClickOption = (e: any) => {
-    console.log(e.target.value);
+    const answerNum = data?.answer;
+    const clickNum = e.target.value;
+
+    if (answerNum === clickNum) {
+      return alert("정답");
+    } else {
+      return alert("오답");
+    }
   };
 
   return (
@@ -117,16 +127,14 @@ function App() {
         <Box>
           <ResultBox color="#E67E22">
             <h3>{data?.question}</h3>
-            {data?.options.split("\n").map((option, idx) => (
-              <div onClick={(e) => onClickOption(e)} key={idx}>
-                {option}
-              </div>
-            ))}
-            <span>정답 : {data?.answer}</span>
+            <ol>
+              {data?.options.split("\n").map((option, idx) => (
+                <li value={idx + 1} style={{ listStyle: "none" }} onClick={(e) => onClickOption(e)} key={idx}>
+                  {option}
+                </li>
+              ))}
+            </ol>
           </ResultBox>
-          {/* <Button onClick={onClickCopyButton} color="#E67E22">
-            복사하기
-          </Button> */}
         </Box>
       </Main>
     </Layout>
