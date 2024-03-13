@@ -36,6 +36,7 @@ const ResultBox = styled.div`
   border-radius: 25px;
   border: solid 2px ${(prop) => prop.color};
   padding: 1rem;
+  position: relative;
   ol {
     padding-left: 0;
   }
@@ -62,10 +63,10 @@ const Button = styled.button<{ color: string }>`
   height: 60px;
   border-radius: 25px;
   border: ${(prop) => prop.color};
-  background-color: ${(prop) => prop.color};
+  background-color: ${(prop) => (prop.disabled ? "#CCCCCC" : prop.color)};
   color: white;
   font-size: 20px;
-  cursor: pointer;
+  cursor: ${(prop) => (prop.disabled ? "not-allowed" : "pointer")};
 `;
 
 interface IQuiz {
@@ -77,11 +78,12 @@ interface IQuiz {
 function App() {
   const [data, setData] = useState<IQuiz>();
   const [value, setValue] = useState();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [disable, setDisable] = useState(false);
 
   const onClickMakeButton = async () => {
-    setLoading(true);
-
+    setLoading(false);
+    setDisable(true);
     await fetch("https://wdw6st9941.execute-api.ap-northeast-2.amazonaws.com/dev/items", {
       method: "POST",
       headers: {
@@ -91,7 +93,9 @@ function App() {
     })
       .then((response) => response.json())
       .then((data) => {
-        setLoading(false);
+        setLoading(true);
+        setDisable(false);
+
         setData(data);
       })
       .catch((error) => console.error("Fetch 에러:", error));
@@ -107,16 +111,13 @@ function App() {
       return alert("오답");
     }
   };
-  {
-    /* TODO : 문제 풀고 나서 채점 한 디자인 추가하기 */
-  }
   return (
     <Layout>
       <Title>인스턴트 퀴즈</Title>
       <Main>
         <Box>
           <Textarea maxLength={3000} onChange={(e: any) => setValue(e.target.value)} color="#27ae60" />
-          <Button onClick={onClickMakeButton} color="#27ae60">
+          <Button disabled={disable} onClick={onClickMakeButton} color="#27ae60">
             만들기
           </Button>
         </Box>
@@ -130,7 +131,7 @@ function App() {
                 </li>
               ))}
             </ol>
-            {loading ? <Loading /> : null}
+            {loading ? null : <Loading />}
           </ResultBox>
         </Box>
       </Main>

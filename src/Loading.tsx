@@ -2,10 +2,12 @@ import React from "react";
 import styled from "styled-components";
 import Spinner from "./assets/Spinner.gif";
 const Background = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
+  position: absolute;
+  left: 43%;
+  top: 44%;
+  img {
+    width: 90px;
+  }
 `;
 
 const LoadingText = styled.div`
