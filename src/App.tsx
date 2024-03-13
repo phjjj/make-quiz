@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
+import Loading from "./Loading";
 
 const Layout = styled.main``;
 const Title = styled.h1`
@@ -76,9 +77,12 @@ interface IQuiz {
 function App() {
   const [data, setData] = useState<IQuiz>();
   const [value, setValue] = useState();
+  const [loading, setLoading] = useState(false);
 
-  const onClickMakeButton = () => {
-    fetch("https://wdw6st9941.execute-api.ap-northeast-2.amazonaws.com/dev/items", {
+  const onClickMakeButton = async () => {
+    setLoading(true);
+
+    await fetch("https://wdw6st9941.execute-api.ap-northeast-2.amazonaws.com/dev/items", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -86,21 +90,11 @@ function App() {
       body: JSON.stringify({ value }),
     })
       .then((response) => response.json())
-      .then((data) => setData(data))
+      .then((data) => {
+        setLoading(false);
+        setData(data);
+      })
       .catch((error) => console.error("Fetch 에러:", error));
-  };
-
-  const onClickCopyButton = () => {
-    const { question, options, answer } = data as IQuiz;
-    // console.log(question, options, answer);
-    // navigator.clipboard
-    //   .writeText(JSON.stringify(clipboardData))
-    //   .then(() => {
-    //     console.log("데이터가 클립보드에 복사되었습니다.");
-    //   })
-    //   .catch((error) => {
-    //     console.error("클립보드 복사 중 오류가 발생했습니다:", error);
-    //   });
   };
 
   const onClickOption = (e: any) => {
@@ -113,10 +107,12 @@ function App() {
       return alert("오답");
     }
   };
-
+  {
+    /* TODO : 문제 풀고 나서 채점 한 디자인 추가하기 */
+  }
   return (
     <Layout>
-      <Title>문제 만들기</Title>
+      <Title>인스턴트 퀴즈</Title>
       <Main>
         <Box>
           <Textarea maxLength={3000} onChange={(e: any) => setValue(e.target.value)} color="#27ae60" />
@@ -134,6 +130,7 @@ function App() {
                 </li>
               ))}
             </ol>
+            {loading ? <Loading /> : null}
           </ResultBox>
         </Box>
       </Main>
